@@ -46,7 +46,7 @@ function CreateUser() {
 
   return (
     <>
-      <div className="align-center flex h-full w-full flex-grow items-center justify-center">
+      <div className="align-center flex h-screen w-screen flex-grow items-center justify-center">
         <div className="grid w-full max-w-sm gap-4">
           <Field data-invalid={saveDisabled}>
             <FieldLabel htmlFor="input-field-name">Your Name</FieldLabel>

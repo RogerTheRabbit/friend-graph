@@ -74,7 +74,7 @@ function AddFriend() {
 
   return (
     <>
-      <div className="align-center flex h-full w-full flex-grow items-center justify-center">
+      <div className="flex h-screen items-center justify-center">
         <div className="grid w-full max-w-sm gap-4">
           <Field>
             <FieldLabel htmlFor="input-field-name">Your Name</FieldLabel>
