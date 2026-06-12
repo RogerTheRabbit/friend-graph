@@ -11,12 +11,12 @@ export function App() {
       <Button
         variant="outline"
         size="icon-lg"
-        className="m-3"
+        className="absolute top-0 right-0 m-3"
         onClick={() => navigate("/add")}
       >
         <Plus />
       </Button>
-      <div className="flex min-h-svh p-6">
+      <div className="flex min-h-svh">
         <div className="min-h-0 flex-1">
           <Graph />
         </div>

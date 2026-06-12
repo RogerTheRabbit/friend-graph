@@ -48,15 +48,16 @@ function CreateUser() {
     <>
       <div className="align-center flex h-screen w-screen flex-grow items-center justify-center">
         <div className="grid w-full max-w-sm gap-4">
-          <Field data-invalid={saveDisabled}>
+          <Field data-invalid={saveDisabled && name.trim().length !== 0}>
             <FieldLabel htmlFor="input-field-name">Your Name</FieldLabel>
             <Input
               value={name}
               onChange={(e) => {
                 setName(e.target.value)
               }}
+              placeholder="Your name"
             />
-            {saveDisabled && (
+            {saveDisabled && name.trim().length !== 0 && (
               <FieldDescription>
                 Someone alread has that name. name should be unique so can be
                 differentiated from others. Try putting a last name.
