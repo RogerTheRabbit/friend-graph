@@ -92,7 +92,11 @@ export const Graph = () => {
       .data(nodes)
       .join("g")
 
-    node.append("circle").attr("r", 60).attr("fill", "var(--card)")
+    node
+      .append("circle")
+      .attr("r", 60)
+      .attr("fill", "var(--sidebar)")
+      .attr("stroke", "var(--sidebar-border)")
 
     node
       .append("text")
@@ -108,7 +112,7 @@ export const Graph = () => {
           return
         }
 
-        const lineHeight = 1.1 // em
+        const lineHeight = 1.1
         const startY = -((words.length - 1) * lineHeight) / 2
 
         words.forEach((word, i) => {
