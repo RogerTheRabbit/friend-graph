@@ -7,6 +7,7 @@ import { ThemeProvider } from "@/components/theme-provider.tsx"
 import { BrowserRouter, Route, Routes } from "react-router"
 import AddFriend from "./components/custom/add-friend.tsx"
 import CreateUser from "./components/custom/create-user.tsx"
+import Admin from "./components/custom/admin.tsx"
 const basename = import.meta.env.VITE_BASE || "/"
 
 createRoot(document.getElementById("root")!).render(
@@ -17,6 +18,7 @@ createRoot(document.getElementById("root")!).render(
           <Route path="/" element={<App />} />
           <Route path="/add" element={<AddFriend />} />
           <Route path="/create" element={<CreateUser />} />
+          <Route path="/admin" element={<Admin />} />
         </Routes>
       </BrowserRouter>
     </ThemeProvider>
