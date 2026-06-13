@@ -6,11 +6,15 @@ import type { FriendGraph, FriendNode, FriendLink } from "@/lib/types"
 export const Graph = () => {
   const ref = useRef(null)
   const [size, setSize] = useState({ width: 0, height: 0 })
-  const data: FriendGraph = JSON.parse(
-    localStorage.getItem("graph") || '{ "nodes": [], "links": [] }'
-  )
+  const [data, setData] = useState<FriendGraph>({ nodes: [], links: [] })
 
   useEffect(() => {
+    setData(
+      JSON.parse(
+        localStorage.getItem("graph") || '{ "nodes": [], "links": [] }'
+      )
+    )
+
     if (!ref.current) return
 
     const ro = new ResizeObserver(([entry]) => {
@@ -126,7 +130,7 @@ export const Graph = () => {
     return () => {
       simulation.stop()
     }
-  }, [size])
+  }, [size, data])
 
   return <div ref={ref} style={{ width: "100%", height: "100%" }} />
 }

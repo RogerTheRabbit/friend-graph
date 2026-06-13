@@ -24,9 +24,7 @@ import type { FriendGraph } from "@/lib/types"
 
 function AddFriend() {
   const anchor = useComboboxAnchor()
-  const data: FriendGraph = JSON.parse(
-    localStorage.getItem("graph") || '{ "nodes": [], "links": [] }'
-  )
+  const [data, setData] = useState<FriendGraph>({ nodes: [], links: [] })
   const [source, setSource] = useState<string>("")
   const [items, setItems] = useState<String[]>([])
   const [friends, setFriends] = useState<String[]>([])
@@ -35,6 +33,12 @@ function AddFriend() {
   const navigate = useNavigate()
 
   useEffect(() => {
+    setData(
+      JSON.parse(
+        localStorage.getItem("graph") || '{ "nodes": [], "links": [] }'
+      )
+    )
+
     const name = searchParams.get("name")
     if (name && data.nodes.map((node) => node.id).includes(name)) {
       setSource(name)
@@ -69,7 +73,7 @@ function AddFriend() {
         ],
       })
     )
-    navigate("/")
+    navigate(`/?name=${source}`)
   }
 
   return (

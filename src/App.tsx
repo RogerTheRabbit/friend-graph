@@ -2,6 +2,7 @@ import { Graph } from "@/components/custom/chart/graph"
 import { useNavigate } from "react-router"
 import { Button } from "./components/ui/button"
 import { Plus } from "lucide-react"
+import StatsDialog from "./components/custom/stats-dialog"
 
 export function App() {
   const navigate = useNavigate()
@@ -16,6 +17,7 @@ export function App() {
       >
         <Plus />
       </Button>
+      <StatsDialog />
       <div className="flex min-h-svh">
         <div className="min-h-0 flex-1">
           <Graph />
