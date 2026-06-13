@@ -15,7 +15,7 @@ export function App() {
         onClick={() => navigate("/add")}
       >
         <Plus />
-        Add Friends
+        Signin
       </Button>
       <StatsDialog />
       <div className="flex min-h-svh">

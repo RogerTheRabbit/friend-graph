@@ -38,7 +38,7 @@ export const Graph = () => {
     const nodeCount = nodes.length
     const linkDistance = Math.max(
       80,
-      Math.min(250, 10000 / Math.sqrt(nodeCount))
+      Math.min(300, 100000 / Math.sqrt(nodeCount))
     )
     const chargeStrength = Math.max(-300, -1000 / Math.sqrt(nodes.length))
 
