@@ -97,11 +97,13 @@ function AddFriend() {
                 <SelectValue placeholder="Select your name" />
               </SelectTrigger>
               <SelectContent>
-                {data.nodes?.map((node) => (
-                  <SelectItem key={node.id} value={node.id}>
-                    {node.id}
-                  </SelectItem>
-                ))}
+                {data.nodes
+                  ?.sort((a, b) => a.id.localeCompare(b.id))
+                  .map((node) => (
+                    <SelectItem key={node.id} value={node.id}>
+                      {node.id}
+                    </SelectItem>
+                  ))}
               </SelectContent>
             </Select>
           </Field>
@@ -119,7 +121,7 @@ function AddFriend() {
               items={items}
               id="input-friend-select"
               value={friends}
-              onValueChange={(val) => setFriends(val)}
+              onValueChange={(val) => setFriends(val.sort())}
             >
               <ComboboxChips ref={anchor} className="w-full">
                 <ComboboxValue>
