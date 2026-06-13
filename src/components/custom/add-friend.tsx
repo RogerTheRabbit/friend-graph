@@ -50,9 +50,13 @@ function AddFriend() {
       data.nodes?.filter((val) => val.id !== source).map((node) => node.id)
     )
     setFriends(
-      data.links
-        .filter((link) => link.source === source || link.target === source)
-        .map((link) => (link.source === source ? link.target : link.source))
+      Array.from(
+        new Set(
+          data.links
+            .filter((link) => link.source === source || link.target === source)
+            .map((link) => (link.source === source ? link.target : link.source))
+        )
+      )
     )
   }, [source])
 
