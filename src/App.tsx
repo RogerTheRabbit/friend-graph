@@ -10,12 +10,12 @@ export function App() {
   return (
     <div>
       <Button
-        variant="outline"
-        size="icon-lg"
+        variant="default"
         className="absolute top-0 right-0 m-3"
         onClick={() => navigate("/add")}
       >
         <Plus />
+        Add Friends
       </Button>
       <StatsDialog />
       <div className="flex min-h-svh">
