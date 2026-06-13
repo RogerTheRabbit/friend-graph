@@ -108,7 +108,9 @@ export function recommendFriends(
 
   return `✨ ${top
     .map((r) => getPersonName(graph, r.id))
-    .join(", ")} keep showing up in your circles. Worth an introduction?`
+    .join(
+      ", "
+    )} keep${top.length > 0 ? "s" : ""} showing up in your circles. Worth an introduction?`
 }
 
 export function bridgeScore(graph: FriendGraph, nodeId: string): string {
