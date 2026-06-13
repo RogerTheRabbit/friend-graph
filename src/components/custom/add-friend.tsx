@@ -49,7 +49,11 @@ function AddFriend() {
     setItems(
       data.nodes?.filter((val) => val.id !== source).map((node) => node.id)
     )
-    setFriends(friends.filter((val) => val !== source))
+    setFriends(
+      data.links
+        .filter((link) => link.source === source || link.target === source)
+        .map((link) => (link.source === source ? link.target : link.source))
+    )
   }, [source])
 
   useEffect(() => {
@@ -66,7 +70,7 @@ function AddFriend() {
       JSON.stringify({
         ...data,
         links: [
-          ...data["links"],
+          ...data["links"].filter((link) => link.source !== source),
           ...friends.map((friend) => {
             return { source: source, target: friend, value: 1 }
           }),
