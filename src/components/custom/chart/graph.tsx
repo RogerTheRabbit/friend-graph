@@ -53,6 +53,8 @@ export const Graph = () => {
       )
       .force("charge", d3.forceManyBody().strength(chargeStrength))
       .force("center", d3.forceCenter(width / 2, height / 2))
+      .force("x", d3.forceX(width / 2).strength(0.05))
+      .force("y", d3.forceY(height / 2).strength(0.05))
       .force("collide", d3.forceCollide(linkDistance * 0.3))
 
     const svg = d3
