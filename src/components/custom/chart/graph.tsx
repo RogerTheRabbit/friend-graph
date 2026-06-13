@@ -35,11 +35,7 @@ export const Graph = () => {
     const links = data.links?.map((d) => ({ ...d })) || []
     const nodes = data.nodes?.map((d) => ({ ...d })) || []
 
-    const nodeCount = nodes.length
-    const linkDistance = Math.max(
-      80,
-      Math.max(300, 10000 / Math.sqrt(Math.sqrt(nodeCount)))
-    )
+    const linkDistance = Math.max(80, Math.max(500))
     const chargeStrength = Math.max(-300, -1000 / Math.sqrt(nodes.length))
 
     const simulation = d3
