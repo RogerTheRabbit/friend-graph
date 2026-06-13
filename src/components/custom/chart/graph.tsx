@@ -35,6 +35,13 @@ export const Graph = () => {
     const links = data.links?.map((d) => ({ ...d })) || []
     const nodes = data.nodes?.map((d) => ({ ...d })) || []
 
+    const nodeCount = nodes.length
+    const linkDistance = Math.max(
+      80,
+      Math.min(250, 10000 / Math.sqrt(nodeCount))
+    )
+    const chargeStrength = Math.max(-300, -1000 / Math.sqrt(nodes.length))
+
     const simulation = d3
       .forceSimulation(nodes)
       .force(
@@ -42,11 +49,11 @@ export const Graph = () => {
         d3
           .forceLink<FriendNode, FriendLink>(links)
           .id((d) => d.id)
-          .distance(250)
+          .distance(linkDistance)
       )
-      .force("charge", d3.forceManyBody().strength(-300))
+      .force("charge", d3.forceManyBody().strength(chargeStrength))
       .force("center", d3.forceCenter(width / 2, height / 2))
-      .force("collide", d3.forceCollide().radius(50).strength(1))
+      .force("collide", d3.forceCollide(linkDistance * 0.3))
 
     const svg = d3
       .select(ref.current)
@@ -74,7 +81,7 @@ export const Graph = () => {
       .selectAll<SVGGElement, FriendNode>("line")
       .data(links)
       .join("line")
-      .attr("stroke-width", "3")
+      .attr("stroke-width", "5")
 
     const node = graph
       .append("g")
@@ -83,14 +90,33 @@ export const Graph = () => {
       .data(nodes)
       .join("g")
 
-    node.append("circle").attr("r", 50).attr("fill", "var(--card)")
+    node.append("circle").attr("r", 60).attr("fill", "var(--card)")
 
     node
       .append("text")
-      .text((d) => d.id.toUpperCase())
       .attr("fill", "var(--foreground)")
-      .attr("dominant-baseline", "middle")
       .attr("text-anchor", "middle")
+      .attr("dominant-baseline", "middle")
+      .each(function (d) {
+        const words = d.id.toUpperCase().split(" ")
+        const text = d3.select(this)
+
+        if (words.length === 1) {
+          text.text(words[0])
+          return
+        }
+
+        const lineHeight = 1.1 // em
+        const startY = -((words.length - 1) * lineHeight) / 2
+
+        words.forEach((word, i) => {
+          text
+            .append("tspan")
+            .attr("x", 0)
+            .attr("dy", i === 0 ? `${startY}em` : `${lineHeight}em`)
+            .text(word)
+        })
+      })
 
     node.call(
       d3
