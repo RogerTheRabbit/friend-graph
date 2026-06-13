@@ -57,7 +57,18 @@ export const Graph = () => {
       .attr("viewBox", [0, 0, width, height])
       .attr("style", "max-width: 100%; height: 100%;")
 
-    const link = svg
+    const graph = svg.append("g")
+
+    const zoom = d3
+      .zoom<SVGSVGElement, unknown>()
+      .scaleExtent([0.1, 5])
+      .on("zoom", (event) => {
+        graph.attr("transform", event.transform)
+      })
+
+    svg.call(zoom)
+
+    const link = graph
       .append("g")
       .attr("stroke", "var(--border)")
       .selectAll<SVGGElement, FriendNode>("line")
@@ -65,7 +76,7 @@ export const Graph = () => {
       .join("line")
       .attr("stroke-width", "3")
 
-    const node = svg
+    const node = graph
       .append("g")
       .attr("stroke-width", 1)
       .selectAll<SVGGElement, FriendNode>("g")
@@ -105,6 +116,7 @@ export const Graph = () => {
       event: d3.D3DragEvent<SVGGElement, FriendNode, FriendNode>,
       d: FriendNode
     ) {
+      event.sourceEvent.stopPropagation()
       if (!event.active) simulation.alphaTarget(0.3).restart()
       d.fx = d.x
       d.fy = d.y
@@ -114,6 +126,7 @@ export const Graph = () => {
       event: d3.D3DragEvent<SVGGElement, FriendNode, FriendNode>,
       d: FriendNode
     ) {
+      event.sourceEvent.stopPropagation()
       d.fx = event.x
       d.fy = event.y
     }
