@@ -140,6 +140,7 @@ export const Graph = () => {
     }
 
     function dragstarted(
+      this: SVGGElement,
       event: d3.D3DragEvent<SVGGElement, FriendNode, FriendNode>,
       d: FriendNode
     ) {
@@ -147,6 +148,19 @@ export const Graph = () => {
       if (!event.active) simulation.alphaTarget(0.3).restart()
       d.fx = d.x
       d.fy = d.y
+
+      // Change color of nodes + links when dragging
+      d3.select(this).select("circle").attr("fill", "var(--accent)")
+      // Not the most performant to iterate over every node line this
+      // but okay for now since we don't have that many nodes
+      link.attr("stroke", (l) => {
+        const source = l.source as FriendNode
+        const target = l.target as FriendNode
+
+        return source.id === d.id || target.id === d.id
+          ? "var(--accent)"
+          : "var(--border)"
+      })
     }
 
     function dragged(
@@ -159,12 +173,17 @@ export const Graph = () => {
     }
 
     function dragended(
+      this: SVGGElement,
       event: d3.D3DragEvent<SVGGElement, FriendNode, FriendNode>,
       d: FriendNode
     ) {
       if (!event.active) simulation.alphaTarget(0)
       d.fx = null
       d.fy = null
+
+      // Change color of nodes + links when dragging ends
+      d3.select(this).select("circle").attr("fill", "var(--sidebar)")
+      link.attr("stroke", "var(--border)")
     }
 
     return () => {

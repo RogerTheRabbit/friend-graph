@@ -113,10 +113,10 @@ function AddFriend() {
           </Field>
           <Button
             variant="link"
-            className="text-secondary"
+            className="text-secondary-foreground"
             onClick={() => navigate("/create")}
           >
-            Don't see your name? Click here
+            Missing name? Click here
           </Button>
           <Field>
             <FieldLabel htmlFor="input-friend-select">Your Friends</FieldLabel>
