@@ -12,7 +12,7 @@ function Admin() {
 
   useEffect(() => {
     setData(
-      JSON.stringify(JSON.parse(localStorage.getItem("graph") || ""), null, 2)
+      JSON.stringify(JSON.parse(localStorage.getItem("graph") || "{}"), null, 2)
     )
   }, [])
 

@@ -32,7 +32,6 @@ function StatsDialog() {
 
   useEffect(() => {
     const name = searchParams.get("name")
-    console.log("name", name)
     if (!!name) {
       setStatsOpen(true)
       setStats(

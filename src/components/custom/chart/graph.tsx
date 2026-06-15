@@ -35,8 +35,7 @@ export const Graph = () => {
     const links = data.links?.map((d) => ({ ...d })) || []
     const nodes = data.nodes?.map((d) => ({ ...d })) || []
 
-    const linkDistance = Math.max(80, Math.max(500))
-    const chargeStrength = Math.max(-300, -1000 / Math.sqrt(nodes.length))
+    const linkDistance = 165 * Math.log(nodes.length)
 
     const simulation = d3
       .forceSimulation(nodes)
@@ -47,11 +46,11 @@ export const Graph = () => {
           .id((d) => d.id)
           .distance(linkDistance)
       )
-      .force("charge", d3.forceManyBody().strength(chargeStrength))
+      .force("charge", d3.forceManyBody())
       .force("center", d3.forceCenter(width / 2, height / 2))
       .force("x", d3.forceX(width / 2).strength(0.05))
       .force("y", d3.forceY(height / 2).strength(0.05))
-      .force("collide", d3.forceCollide(linkDistance * 0.3))
+      .force("collide", d3.forceCollide(linkDistance * 0.2).strength(0.5))
 
     const svg = d3
       .select(ref.current)
