@@ -5,6 +5,7 @@ import { useNavigate } from "react-router"
 import { Toaster } from "../ui/sonner"
 import { toast } from "sonner"
 import { AutosizeTextarea } from "./autosize-text-area"
+import { convertToMarkdown } from "@/lib/obsidian-converter"
 
 function Admin() {
   const [data, setData] = useState<string>("")
@@ -31,7 +32,12 @@ function Admin() {
         <Button variant="outline" onClick={() => navigate("/")}>
           Cancel
         </Button>
-
+        <Button
+          variant="outline"
+          onClick={() => convertToMarkdown(JSON.parse(data))}
+        >
+          Export to Obsidian
+        </Button>
         <Button
           type="submit"
           onClick={() => {
