@@ -2,7 +2,7 @@ import type { FriendGraph } from "./types"
 
 type AdjacencyMap = Map<string, Set<string>>
 
-function buildUndirectedAdjacency(graph: FriendGraph): AdjacencyMap {
+export function buildUndirectedAdjacency(graph: FriendGraph): AdjacencyMap {
   const adjacency = new Map<string, Set<string>>()
 
   for (const node of graph.nodes) {

@@ -2,18 +2,22 @@ import { useEffect, useRef, useState } from "react"
 import * as d3 from "d3"
 
 import type { FriendGraph, FriendNode, FriendLink } from "@/lib/types"
+import { buildUndirectedAdjacency } from "@/lib/stats"
 
 export const Graph = () => {
   const ref = useRef(null)
   const [size, setSize] = useState({ width: 0, height: 0 })
   const [data, setData] = useState<FriendGraph>({ nodes: [], links: [] })
+  const [undirectedAdjacency, setUndirectedAdjacency] = useState<
+    Map<string, Set<string>>
+  >(new Map())
 
   useEffect(() => {
-    setData(
-      JSON.parse(
-        localStorage.getItem("graph") || '{ "nodes": [], "links": [] }'
-      )
+    const localStorageData: FriendGraph = JSON.parse(
+      localStorage.getItem("graph") || '{ "nodes": [], "links": [] }'
     )
+    setData(localStorageData)
+    setUndirectedAdjacency(buildUndirectedAdjacency(localStorageData))
 
     if (!ref.current) return
 
@@ -150,6 +154,16 @@ export const Graph = () => {
       d.fy = d.y
 
       // Change color of nodes + links when dragging
+      d3.selectAll<SVGGElement, FriendNode>(node)
+        .select("text")
+        .filter((val) => {
+          return (
+            val.id !== d.id &&
+            !!undirectedAdjacency.get(d.id) &&
+            !undirectedAdjacency.get(d.id)!.has(val.id)
+          )
+        })
+        .attr("opacity", "0.3")
       d3.select(this).select("circle").attr("fill", "var(--accent)")
       // Not the most performant to iterate over every node line this
       // but okay for now since we don't have that many nodes
@@ -184,6 +198,7 @@ export const Graph = () => {
       // Change color of nodes + links when dragging ends
       d3.select(this).select("circle").attr("fill", "var(--sidebar)")
       link.attr("stroke", "var(--border)")
+      d3.selectAll("text").attr("opacity", "1")
     }
 
     return () => {
