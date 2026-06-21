@@ -1,16 +1,29 @@
-import { useEffect, useRef, useState } from "react"
+import { useEffect, useMemo, useRef, useState } from "react"
 import * as d3 from "d3"
+import Fuse from "fuse.js"
 
 import type { FriendGraph, FriendNode, FriendLink } from "@/lib/types"
 import { buildUndirectedAdjacency } from "@/lib/stats"
 
-export const Graph = () => {
+type GraphProps = {
+  query: string
+}
+
+export const Graph = (props: GraphProps) => {
   const ref = useRef(null)
   const [size, setSize] = useState({ width: 0, height: 0 })
   const [data, setData] = useState<FriendGraph>({ nodes: [], links: [] })
   const [undirectedAdjacency, setUndirectedAdjacency] = useState<
     Map<string, Set<string>>
   >(new Map())
+
+  const fuse = useMemo(() => {
+    return new Fuse(data.nodes, {
+      useTokenSearch: false,
+      keys: ["id"],
+      threshold: 0.1,
+    })
+  }, [data])
 
   useEffect(() => {
     const localStorageData: FriendGraph = JSON.parse(
@@ -36,8 +49,32 @@ export const Graph = () => {
     const width = size.width
     const height = size.height
 
-    const links = data.links?.map((d) => ({ ...d })) || []
-    const nodes = data.nodes?.map((d) => ({ ...d })) || []
+    const queryResults = fuse.search(props.query).map((val) => val.item)
+    const queryResultFriendIds = new Set<string>()
+    queryResults.forEach((result) =>
+      undirectedAdjacency
+        .get(result.id)
+        ?.forEach((id) => queryResultFriendIds.add(id))
+    )
+    const filteredNodes = [
+      ...queryResults,
+      ...[...queryResultFriendIds.values()].map((friendId) => {
+        return { id: friendId, group: 2 }
+      }),
+    ]
+    const filteredData: FriendGraph = props.query
+      ? {
+          nodes: filteredNodes,
+          links: data.links.filter(
+            (link) =>
+              filteredNodes.some((node) => node.id === link.source) &&
+              filteredNodes.some((node) => node.id === link.target)
+          ),
+        }
+      : data
+
+    const links = filteredData.links?.map((d) => ({ ...d })) || []
+    const nodes = filteredData.nodes?.map((d) => ({ ...d })) || []
 
     const linkDistance = 165 * Math.log(nodes.length)
 
@@ -84,20 +121,20 @@ export const Graph = () => {
       .join("line")
       .attr("stroke-width", "5")
 
-    const node = graph
+    const graphNodes = graph
       .append("g")
       .attr("stroke-width", 1)
       .selectAll<SVGGElement, FriendNode>("g")
       .data(nodes)
       .join("g")
 
-    node
+    graphNodes
       .append("circle")
       .attr("r", 60)
       .attr("fill", "var(--sidebar)")
       .attr("stroke", "var(--sidebar-border)")
 
-    node
+    graphNodes
       .append("text")
       .attr("fill", "var(--foreground)")
       .attr("text-anchor", "middle")
@@ -123,7 +160,15 @@ export const Graph = () => {
         })
       })
 
-    node.call(
+    // Outline searched nodes
+    props.query &&
+      graphNodes
+        .filter((node) => ![...queryResultFriendIds.values()].includes(node.id))
+        .select("circle")
+        .attr("stroke", "var(--accent)")
+        .attr("stroke-width", 4)
+
+    graphNodes.call(
       d3
         .drag<SVGGElement, FriendNode>()
         .on("start", dragstarted)
@@ -140,7 +185,7 @@ export const Graph = () => {
         .attr("x2", (d) => (d.target as FriendNode).x ?? 0)
         .attr("y2", (d) => (d.target as FriendNode).y ?? 0)
 
-      node.attr("transform", (d) => `translate(${d.x ?? 0},${d.y ?? 0})`)
+      graphNodes.attr("transform", (d) => `translate(${d.x ?? 0},${d.y ?? 0})`)
     }
 
     function dragstarted(
@@ -154,7 +199,7 @@ export const Graph = () => {
       d.fy = d.y
 
       // Change color of nodes + links when dragging
-      d3.selectAll<SVGGElement, FriendNode>(node)
+      graphNodes
         .select("text")
         .filter((val) => {
           return (
@@ -204,7 +249,7 @@ export const Graph = () => {
     return () => {
       simulation.stop()
     }
-  }, [size, data])
+  }, [size, props.query])
 
   return <div ref={ref} style={{ width: "100%", height: "100%" }} />
 }
